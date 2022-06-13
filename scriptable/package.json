@@ -2,6 +2,9 @@
     "name": "com.anggape.tools.scriptable",
     "displayName": "Scriptable",
     "version": "0.0.0-dev.0",
+    "dependencies": {
+        "com.unity.settings-manager": "2.0.1"
+    },
     "author": {
         "name": "Angga Permana",
         "email": "anggape.dev@gmail.com",

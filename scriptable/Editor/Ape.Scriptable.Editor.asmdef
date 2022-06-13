@@ -2,7 +2,8 @@
     "name": "Ape.Scriptable.Editor",
     "rootNamespace": "Ape.Scriptable",
     "references": [
-        "GUID:73c3424faac9bf751b5924b62fb36c8f"
+        "GUID:73c3424faac9bf751b5924b62fb36c8f",
+        "GUID:49818357e697641afb75d2f8acaf1861"
     ],
     "includePlatforms": [
         "Editor"

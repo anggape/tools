@@ -55,7 +55,7 @@ namespace Ape.Scriptable
             var scriptableBase = typeFullName.Substring(0, typeFullName.IndexOf('`'));
             var inherits = string.Join(", ", genericTypes.Select(x => x.FullName));
 
-            var scriptDirectory = Path.Combine("Assets", "Scripts");
+            var scriptDirectory = ScriptableSettings.ScriptsOutput;
             var scriptFile = Path.Combine(scriptDirectory, $"{className}{scriptableType}.cs");
             var script = string.Format(
                 "public class {0}{1} : {2}<{3}> {{ }}",
