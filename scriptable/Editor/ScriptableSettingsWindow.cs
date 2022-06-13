@@ -13,8 +13,7 @@ namespace Ape.Scriptable
 
         private void OnEnable()
         {
-            var groupPath = AssetDatabase.GUIDToAssetPath(ScriptableSettings.AssetGroup);
-            _assetGroupSetting = AssetDatabase.LoadMainAssetAtPath(groupPath) as ScriptableGroup;
+            _assetGroupSetting = ScriptableSettings.AssetGroup;
             _scriptsOutputSetting = ScriptableSettings.ScriptsOutput;
         }
 
@@ -37,14 +36,7 @@ namespace Ape.Scriptable
             {
                 ScriptableSettings.ScriptsOutput = _scriptsOutputSetting;
                 if (_assetGroupSetting != null)
-                {
-                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(
-                        _assetGroupSetting,
-                        out string guid,
-                        out long localId
-                    );
-                    ScriptableSettings.AssetGroup = guid;
-                }
+                    ScriptableSettings.AssetGroup = _assetGroupSetting;
                 ScriptableSettings.Save();
             }
 

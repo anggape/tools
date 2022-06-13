@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEditor.SettingsManagement;
 
 namespace Ape.Scriptable
@@ -12,10 +13,10 @@ namespace Ape.Scriptable
             set => Set(nameof(ScriptsOutput), value);
         }
 
-        public static string AssetGroup
+        public static ScriptableGroup AssetGroup
         {
-            get => Get(nameof(AssetGroup), "");
-            set => Set(nameof(AssetGroup), value);
+            get => GetScriptableGroup();
+            set => SetScriptableGroup(value);
         }
 
         static ScriptableSettings() => s_settings = new Settings("com.anggape.tools.scriptable");
@@ -24,6 +25,22 @@ namespace Ape.Scriptable
             s_settings.Get<T>(key, fallback: defaultValue);
 
         private static void Set<T>(string key, T value) => s_settings.Set<T>(key, value);
+
+        private static ScriptableGroup GetScriptableGroup()
+        {
+            var groupGuid = s_settings.Get<string>(nameof(AssetGroup));
+            var groupPath = AssetDatabase.GUIDToAssetPath(groupGuid);
+            return AssetDatabase.LoadMainAssetAtPath(groupPath) as ScriptableGroup;
+        }
+
+        private static void SetScriptableGroup(ScriptableGroup value)
+        {
+            if (value == null)
+                return;
+
+            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(value, out string guid, out long _);
+            s_settings.Set(nameof(AssetGroup), guid);
+        }
 
         public static void Save() => s_settings.Save();
     }
