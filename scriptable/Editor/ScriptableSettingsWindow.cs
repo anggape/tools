@@ -1,23 +1,54 @@
-using Ape.Scriptable;
 using UnityEditor;
+using UnityEngine;
 
-public class ScriptableSettingsWindow : EditorWindow
+namespace Ape.Scriptable
 {
-    [MenuItem("Ape/Scriptable/Settings")]
-    private static void Open() => GetWindow<ScriptableSettingsWindow>("Scriptable Settings");
-
-    private void OnGUI()
+    public class ScriptableSettingsWindow : EditorWindow
     {
-        // TODO: do not save on every update?
-        EditorGUILayout.BeginVertical("box");
-        ScriptableSettings.ScriptsOutput = EditorGUILayout.TextField(
-            "Scripts Output",
-            ScriptableSettings.ScriptsOutput
-        );
-        ScriptableSettings.AssetsOutput = EditorGUILayout.TextField(
-            "Assets Output",
-            ScriptableSettings.AssetsOutput
-        );
-        EditorGUILayout.EndVertical();
+        private ScriptableGroup _assetGroupSetting;
+        private string _scriptsOutputSetting;
+
+        [MenuItem("Ape/Scriptable/Settings")]
+        private static void Open() => GetWindow<ScriptableSettingsWindow>("Scriptable Settings");
+
+        private void OnEnable()
+        {
+            var groupPath = AssetDatabase.GUIDToAssetPath(ScriptableSettings.AssetGroup);
+            _assetGroupSetting = AssetDatabase.LoadMainAssetAtPath(groupPath) as ScriptableGroup;
+            _scriptsOutputSetting = ScriptableSettings.ScriptsOutput;
+        }
+
+        private void OnGUI()
+        {
+            EditorGUILayout.BeginVertical("box");
+            _scriptsOutputSetting = EditorGUILayout.TextField(
+                "Scripts Output",
+                _scriptsOutputSetting
+            );
+            _assetGroupSetting =
+                EditorGUILayout.ObjectField(
+                    "Assets Output",
+                    _assetGroupSetting,
+                    typeof(ScriptableGroup),
+                    false
+                ) as ScriptableGroup;
+
+            if (GUILayout.Button("Save"))
+            {
+                ScriptableSettings.ScriptsOutput = _scriptsOutputSetting;
+                if (_assetGroupSetting != null)
+                {
+                    AssetDatabase.TryGetGUIDAndLocalFileIdentifier(
+                        _assetGroupSetting,
+                        out string guid,
+                        out long localId
+                    );
+                    ScriptableSettings.AssetGroup = guid;
+                }
+                ScriptableSettings.Save();
+            }
+
+            EditorGUILayout.EndVertical();
+        }
     }
 }

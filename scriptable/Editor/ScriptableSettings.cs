@@ -12,10 +12,10 @@ namespace Ape.Scriptable
             set => Set(nameof(ScriptsOutput), value);
         }
 
-        public static string AssetsOutput
+        public static string AssetGroup
         {
-            get => Get(nameof(AssetsOutput), "Assets/Settings/Scriptable.asset");
-            set => Set(nameof(AssetsOutput), value);
+            get => Get(nameof(AssetGroup), "");
+            set => Set(nameof(AssetGroup), value);
         }
 
         static ScriptableSettings() => s_settings = new Settings("com.anggape.tools.scriptable");
@@ -23,10 +23,8 @@ namespace Ape.Scriptable
         private static T Get<T>(string key, T defaultValue) =>
             s_settings.Get<T>(key, fallback: defaultValue);
 
-        private static void Set<T>(string key, T value)
-        {
-            s_settings.Set<T>(key, value);
-            s_settings.Save();
-        }
+        private static void Set<T>(string key, T value) => s_settings.Set<T>(key, value);
+
+        public static void Save() => s_settings.Save();
     }
 }
