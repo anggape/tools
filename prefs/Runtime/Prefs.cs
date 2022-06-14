@@ -17,5 +17,11 @@ namespace Ape
 
             PlayerPrefs.SetString($"{PrefsPrefix}{key}", json);
         }
+
+        public static T Get<T>(string key)
+        {
+            var json = PlayerPrefs.GetString($"{PrefsPrefix}{key}", "{}");
+            return JsonConvert.DeserializeObject<T>(json);
+        }
     }
 }
