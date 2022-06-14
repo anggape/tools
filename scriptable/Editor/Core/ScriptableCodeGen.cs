@@ -8,11 +8,11 @@ using UnityEditor;
 namespace Ape.Scriptable
 {
     [InitializeOnLoad]
-    public static class CodeGen
+    public static class ScriptableCodeGen
     {
         private static List<Type> _scriptableTypes = new List<Type>();
 
-        static CodeGen()
+        static ScriptableCodeGen()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
