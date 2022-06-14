@@ -7,6 +7,8 @@ namespace Ape
     {
         public const string PrefsPrefix = "__ape_prefs:";
 
+        public static void SaveToPrefs(this object target, string key) => Set(key, target);
+
         public static void Set(string key, object value)
         {
             var json = JsonConvert.SerializeObject(
