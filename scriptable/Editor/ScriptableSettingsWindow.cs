@@ -1,3 +1,5 @@
+using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -5,7 +7,8 @@ namespace Ape.Scriptable
 {
     public class ScriptableSettingsWindow : EditorWindow
     {
-        private ScriptableGroup _assetGroupSetting;
+        private ScriptableDatabase _database;
+        private Editor _databaseEditor;
         private string _scriptsOutputSetting;
 
         [MenuItem("Ape/Scriptable/Settings")]
@@ -13,34 +16,50 @@ namespace Ape.Scriptable
 
         private void OnEnable()
         {
-            _assetGroupSetting = ScriptableSettings.AssetGroup;
             _scriptsOutputSetting = ScriptableSettings.ScriptsOutput;
+
+            var databaseGuids = AssetDatabase.FindAssets(
+                $"t:{typeof(ScriptableDatabase).FullName}"
+            );
+
+            if (databaseGuids.Length == 0)
+            {
+                _database = ScriptableObject.CreateInstance<ScriptableDatabase>();
+                AssetDatabase.CreateAsset(
+                    _database,
+                    Path.Combine("Assets", $"{nameof(ScriptableDatabase)}.asset")
+                );
+                AssetDatabase.Refresh();
+            }
+            else
+            {
+                var path = AssetDatabase.GUIDToAssetPath(databaseGuids.First());
+                _database = AssetDatabase.LoadMainAssetAtPath(path) as ScriptableDatabase;
+            }
+
+            if (databaseGuids.Length > 1)
+                Debug.LogWarning("multiple scriptable database detected.");
+
+            Debug.Log(_database.name);
+
+            _databaseEditor = Editor.CreateEditor(_database);
         }
 
         private void OnGUI()
         {
-            EditorGUILayout.BeginVertical("box");
             _scriptsOutputSetting = EditorGUILayout.TextField(
                 "Scripts Output",
                 _scriptsOutputSetting
             );
-            _assetGroupSetting =
-                EditorGUILayout.ObjectField(
-                    "Assets Output",
-                    _assetGroupSetting,
-                    typeof(ScriptableGroup),
-                    false
-                ) as ScriptableGroup;
+
+            // TODO: separate settings and categories
+            _databaseEditor.OnInspectorGUI();
 
             if (GUILayout.Button("Save"))
             {
                 ScriptableSettings.ScriptsOutput = _scriptsOutputSetting;
-                if (_assetGroupSetting != null)
-                    ScriptableSettings.AssetGroup = _assetGroupSetting;
                 ScriptableSettings.Save();
             }
-
-            EditorGUILayout.EndVertical();
         }
     }
 }
