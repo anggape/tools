@@ -1,0 +1,10 @@
+{
+    "name": "com.anggape.tools.prefs",
+    "displayName": "Prefs",
+    "version": "0.0.0-dev.0",
+    "author": {
+        "name": "Angga Permana",
+        "email": "anggape.dev@gmail.com",
+        "url": "https://github.com/anggape"
+    }
+}
