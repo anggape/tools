@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Ape.Scriptable
 {
-    public abstract class Variable<T> : ScriptableBase
+    public abstract class Variable<T> : ScriptableBase, ISerializationCallbackReceiver
     {
         [SerializeField]
         private T _default;
@@ -15,6 +15,8 @@ namespace Ape.Scriptable
             set => _value = value;
         }
 
-        private void OnEnable() => _value = _default;
+        void ISerializationCallbackReceiver.OnAfterDeserialize() { }
+
+        void ISerializationCallbackReceiver.OnBeforeSerialize() => _value = _default;
     }
 }
